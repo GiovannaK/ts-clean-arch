@@ -1,13 +1,11 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { type LoadFacebookUserApi } from '@/data/contracts/apis'
 import { FacebookAuthenticationService } from '@/data/services'
 import { AuthenticationError } from '@/domain/errors'
+import { mock } from 'jest-mock-extended'
 
 describe('FacebookAuthenticationService', () => {
   it('should call loadFacebookApi with correct params', async () => {
-    const loadFacebookUserApi = {
-      loadUser: jest.fn()
-    }
+    const loadFacebookUserApi = mock<LoadFacebookUserApi>()
     const sut = new FacebookAuthenticationService(loadFacebookUserApi)
 
     await sut.perform({ token: 'any_token' })
@@ -17,13 +15,10 @@ describe('FacebookAuthenticationService', () => {
   })
 
   it('should return AutheticationError when loadFacebookApi returns undefined', async () => {
-    const loadFacebookUserApi = {
-      loadUser: jest.fn()
-    }
+    const loadFacebookUserApi = mock<LoadFacebookUserApi>()
     loadFacebookUserApi.loadUser.mockResolvedValueOnce(undefined)
     const sut = new FacebookAuthenticationService(loadFacebookUserApi)
 
-    // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
     const authResult = await sut.perform({ token: 'any_token' })
 
     expect(authResult).toEqual(new AuthenticationError())
